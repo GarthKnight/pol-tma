@@ -69,7 +69,7 @@
         </div>
         <h1>Modals</h1>
         <button onclick="Telegram.WebApp.showAlert('Hello World!');">Launch Alert</button>
-        <button onclick="showPopup();">Launch Popup</button>
+        <button onclick="showPopup();">Крутим казино</button>
 
         <h1>Links</h1>
         <ul>
@@ -113,11 +113,11 @@
         // Function to call showPopup API
         function showPopup() {
             Telegram.WebApp.showPopup({
-                title: 'Title',
-                message: 'Some message',
+                title: 'Поздравляю',
+                message: 'Вы выиграли литр спермы!',
                 buttons: [
-                    {id: 'link', type: 'default', text: 'Open ton.org'},
-                    {type: 'cancel'},
+                    {id: 'link', type: 'default', text: 'закусить'},
+                    {type: 'выпить'},
                 ]
             }, function(btn) {
                 if (btn === 'link') {
