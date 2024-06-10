@@ -1,5 +1,5 @@
 {
-  "name": "ton-starter-twa-vite",
+  "name": "polygame",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -23,7 +23,15 @@
     "ton-core": "^0.46.0",
     "ton-crypto": "^3.2.0",
     "use-local-storage": "^2.3.6",
-    "vite-plugin-node-polyfills": "^0.7.0"
+    
+    "vite-plugin-node-polyfills": "^0.7.0",
+    "@types/node": "^18.11.18",
+    "@types/react": "^18.0.27",
+    "@types/react-dom": "^18.0.10",
+    "@types/styled-components": "^5.1.26",
+    "@vitejs/plugin-react": "^3.0.1",
+    "typescript": "^4.9.5",
+    "vite": "^4.0.4"
   },
   "devDependencies": {
     "@types/node": "^18.11.18",
