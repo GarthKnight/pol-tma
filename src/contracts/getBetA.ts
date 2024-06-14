@@ -2,7 +2,7 @@ import { getHttpEndpoint } from "@orbs-network/ton-access";
 import { TonClient, Address } from "@ton/ton";
 import MyContract from "./Counter";
 
-const contractAddress = Address.parse("EQDrh9fzMhH0WIJdArEZHrjtm7arM532C0yssbYNaW-TX2_1");
+const contractAddress = Address.parse("EQAwAYGHGtpF0vSqn39uufXq57HflP_FBWf77SYRmrX45B4D");
 
 export async function getTotalBetA() {
   // initialize ton rpc client on testnet

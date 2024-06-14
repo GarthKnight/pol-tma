@@ -24,7 +24,7 @@ export async function sendMessage() {
     const seqno = await walletContract.getSeqno();
 
     // open Counter instance by address
-    const counterAddress = Address.parse("EQDrh9fzMhH0WIJdArEZHrjtm7arM532C0yssbYNaW-TX2_1");
+    const counterAddress = Address.parse("EQAwAYGHGtpF0vSqn39uufXq57HflP_FBWf77SYRmrX45B4D");
     const contract = new MyContract(counterAddress);
     const counterContract = client.open(contract);
 
