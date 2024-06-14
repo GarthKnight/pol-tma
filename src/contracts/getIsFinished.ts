@@ -5,7 +5,7 @@ import { Constants } from "./Constants";
 
 const contractAddress = Address.parse(Constants.addressString);
 
-export async function getTotalBetA() {
+export async function getIsFinished() {
   // initialize ton rpc client on testnet
   const endpoint = await getHttpEndpoint({ network: "testnet" });
   const client = new TonClient({ endpoint });
@@ -16,6 +16,8 @@ export async function getTotalBetA() {
   const counterContract = client.open(counter);
 
   // call the getter on chain
-  const counterValue = await counterContract.getTotalBetA();
+  const counterValue = await counterContract.getIsFinalized();
   console.log("value:", counterValue.toString());
 }
+  
+  

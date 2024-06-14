@@ -5,7 +5,7 @@ import { TonClient, WalletContractV4, Address } from "@ton/ton";
 import MyContract from "./Counter";
 import { Constants } from "./Constants";
 
-export async function sendMessage() {
+export async function finish() {
 
     // initialize ton rpc client on testnet
     const endpoint = await getHttpEndpoint({ network: "testnet" });
@@ -29,7 +29,7 @@ export async function sendMessage() {
     const counterContract = client.open(contract);
 
     // send the increment transaction
-    await counterContract.sendBetOnA(walletSender);
+    await counterContract.sendFinishBet(walletSender);
 
     // wait until confirmed
     let currentSeqno = seqno;

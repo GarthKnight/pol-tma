@@ -8,10 +8,27 @@ export default class MyContract implements Contract {
     return stack.readBigNumber();
   }
 
+  async getIsFinalized(provider: ContractProvider) {
+    const { stack } = await provider.get("isFinalized", []);
+    return stack.readBoolean();
+  }
+
   async sendBetOnA(provider: ContractProvider, via: Sender) {
     const messageBody = beginCell()
       .storeUint(0, 32)
       .storeStringTail("1")
+      .endCell();
+
+    await provider.internal(via, {
+      value: "0.2", // send 0.002 TON for gas
+      body: messageBody
+    })
+  }
+
+  async sendFinishBet(provider: ContractProvider, via: Sender) {
+    const messageBody = beginCell()
+      // .storeUint(0, 32)
+      .storeBit(0)
       .endCell();
 
     await provider.internal(via, {
