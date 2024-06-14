@@ -4,7 +4,7 @@ import { mnemonicToWalletKey } from "ton-crypto";
 import { TonClient, WalletContractV4, Address } from "@ton/ton";
 import MyContract from "./Counter";
 
-export async function run() {
+export async function sendMessage() {
 
     // initialize ton rpc client on testnet
     const endpoint = await getHttpEndpoint({ network: "testnet" });

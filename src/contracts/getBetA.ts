@@ -4,7 +4,7 @@ import MyContract from "./Counter";
 
 const contractAddress = Address.parse("EQDrh9fzMhH0WIJdArEZHrjtm7arM532C0yssbYNaW-TX2_1");
 
-export async function fetchData() {
+export async function getTotalBetA() {
   // initialize ton rpc client on testnet
   const endpoint = await getHttpEndpoint({ network: "testnet" });
   const client = new TonClient({ endpoint });
