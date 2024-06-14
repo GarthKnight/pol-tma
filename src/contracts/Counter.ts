@@ -3,8 +3,8 @@ import { Contract, ContractProvider, Sender, Address, Cell, contractAddress, beg
 export default class Counter implements Contract {
 
 
-  async getCounter(provider: ContractProvider) {
-    const { stack } = await provider.get("testValue", []);
+  async getTotalBetA(provider: ContractProvider) {
+    const { stack } = await provider.get("getTotalBetA", []);
     return stack.readBigNumber();
   }
 
