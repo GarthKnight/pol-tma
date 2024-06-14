@@ -10,11 +10,12 @@ export default class MyContract implements Contract {
 
   async sendBetOnA(provider: ContractProvider, via: Sender) {
     const messageBody = beginCell()
-      .storeUint(1, 32) 
+      .storeUint(0, 32)
+      .storeStringTail("1")
       .endCell();
 
     await provider.internal(via, {
-      value: "0.002", // send 0.002 TON for gas
+      value: "0.2", // send 0.002 TON for gas
       body: messageBody
     })
   }

@@ -3,6 +3,7 @@ import { getHttpEndpoint } from "@orbs-network/ton-access";
 import { mnemonicToWalletKey } from "ton-crypto";
 import { TonClient, WalletContractV4, Address } from "@ton/ton";
 import MyContract from "./Counter";
+import { Constants } from "./constants";
 
 export async function sendMessage() {
 
@@ -11,8 +12,7 @@ export async function sendMessage() {
     const client = new TonClient({ endpoint });
 
     // open wallet v4 (notice the correct wallet version here)
-    const mnemonic = "conduct civil mouse vault ice differ blouse cheese smile card rail give conduct memory item moon resemble decline girl where announce hurry upper struggle"; // your 24 secret words (replace ... with the rest of the words)
-    const key = await mnemonicToWalletKey(mnemonic.split(" "));
+    const key = await mnemonicToWalletKey(Constants.mnemonic.split(" "));
     const wallet = WalletContractV4.create({ publicKey: key.publicKey, workchain: 0 });
     if (!await client.isContractDeployed(wallet.address)) {
         return console.log("wallet is not deployed");
@@ -24,7 +24,7 @@ export async function sendMessage() {
     const seqno = await walletContract.getSeqno();
 
     // open Counter instance by address
-    const counterAddress = Address.parse("EQAwAYGHGtpF0vSqn39uufXq57HflP_FBWf77SYRmrX45B4D");
+    const counterAddress = Address.parse(Constants.addressString);
     const contract = new MyContract(counterAddress);
     const counterContract = client.open(contract);
 
