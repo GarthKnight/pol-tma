@@ -1,8 +1,8 @@
 import { getHttpEndpoint } from "@orbs-network/ton-access";
 import { TonClient, Address } from "@ton/ton";
-import Counter from "./Counter";
+import MyContract from "./Counter";
 
-const counterAddress = Address.parse("EQDrh9fzMhH0WIJdArEZHrjtm7arM532C0yssbYNaW-TX2_1");
+const contractAddress = Address.parse("EQDrh9fzMhH0WIJdArEZHrjtm7arM532C0yssbYNaW-TX2_1");
 
 export async function fetchData() {
   // initialize ton rpc client on testnet
@@ -11,7 +11,7 @@ export async function fetchData() {
 
   // open Counter instance by address
    // replace with your address from step 8
-  const counter = new Counter(counterAddress);
+  const counter = new MyContract(contractAddress);
   const counterContract = client.open(counter);
 
   // call the getter on chain
