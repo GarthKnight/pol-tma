@@ -17,7 +17,7 @@ export async function getIsFinished() {
 
   // call the getter on chain
   const counterValue = await counterContract.getIsFinalized();
-  console.log("value:", counterValue.toString());
+  console.log("value 2:", counterValue.toString());
 }
   
   

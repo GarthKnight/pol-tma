@@ -32,7 +32,7 @@ export default class MyContract implements Contract {
     const messageBody = beginCell().store(storeFinalize({ $$type: "Finalize", outcome_a_wins: true })).endCell();
 
     await provider.internal(via, {
-      value: "0.2", // send 0.002 TON for gas
+      value: "0.3", // send 0.002 TON for gas
       body: messageBody
     })
   }
