@@ -2,7 +2,7 @@
 import { getHttpEndpoint } from "@orbs-network/ton-access";
 import { mnemonicToWalletKey } from "ton-crypto";
 import { TonClient, WalletContractV4, Address } from "@ton/ton";
-import MyContract from "./Counter";
+import MyContract from "./MainContract";
 import { Constants } from "./Constants";
 
 export async function sendMessage() {
