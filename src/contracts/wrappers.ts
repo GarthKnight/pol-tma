@@ -1,5 +1,6 @@
 import {
     Contract, ContractProvider, Sender, Address, Cell, contractAddress, beginCell, Builder,
+    TupleReader,
 } from "@ton/core";
 
 export type Finalize = {
@@ -15,3 +16,12 @@ export function storeFinalize(src: Finalize) {
         b_0.storeBit(src.outcome_a_wins);
     };
 }
+
+export function loadTupleTrumpBiden(source: TupleReader) {
+    let _bet_a_name = source.readString();
+    let _bet_b_name = source.readString();
+    let _image = source.readString();
+    let _odds_a = source.readBigNumber();
+    let _odds_b = source.readBigNumber();
+    return { $$type: 'TrumpBiden' as const, bet_a_name: _bet_a_name, bet_b_name: _bet_b_name, image: _image, odds_a: _odds_a, odds_b: _odds_b };
+  }

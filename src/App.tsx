@@ -1,20 +1,45 @@
 import './App.css';
-import { TonConnectButton, useTonConnectUI } from '@tonconnect/ui-react';
-import React from 'react';
-import { sendMessage } from './contracts/sendMessage';
-import { finish } from './contracts/sendIsFinished';
-import { getIsFinished, getTotalBetA, getGetTrumpBidenData } from './contracts/Getters';
-import { Address, address, beginCell, toNano } from '@ton/ton'
-import { Constants } from './contracts/Constants';
+import { TonConnectButton } from '@tonconnect/ui-react';
+import { useState } from 'react';
+import DialogComponent from './components/DialogComponent';
+import BetInput from './components/BetInput';
 
 function App() {
-  const [tonConnectUI, setOptions] = useTonConnectUI();
+  const [openDialog, setOpenDialog] = useState(false);
+  const [betType, setBetString] = useState('');
+
+  const handleOpenDialog = (data: string) => {
+    setOpenDialog(true);
+    setBetString(data)
+  };
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+  };
 
   return (
-    <div>
+    <div className='app'>
       <TonConnectButton />
 
-      <GetBetAButton />
+      <div className="button-container">
+        <button onClick={() => handleOpenDialog('1')}>Send to 1</button>
+        <button onClick={() => handleOpenDialog('2')}>Send to 2</button>
+      </div>
+
+      <DialogComponent
+        open={openDialog}
+        onClose={handleCloseDialog}
+        title={"We are betting on: " + betType}
+        content={
+          <BetInput
+            onConfirm={handleCloseDialog}
+            bet={betType}
+          />
+        }
+        bet={betType}
+      />
+
+      {/* <GetBetAButton />
 
       <SendBetOnAButton />
 
@@ -23,94 +48,85 @@ function App() {
       <FinishButton />
 
       <button onClick={() =>
-        tonConnectUI.sendTransaction(myTransaction)
+        sendStringMessage("1")
       }>
-        Send transaction
+        First option
       </button>
+
+      <button onClick={() =>
+        tonConnectUI.sendTransaction(createTransactionForStringMessage("1", "0.5"))
+      }>
+        First option
+      </button>
+
 
       <button onClick={() =>
         getGetTrumpBidenData()
       }>
         Get trump
-      </button>
+      </button> */}
     </div >
   );
 }
 
-const contractAddress = Address.parse(Constants.addressString);
-const body = beginCell()
-  .storeUint(0, 32) // write 32 zero bits to indicate that a text comment will follow
-  .storeStringTail("1") // write our text comment
-  .endCell();
-const myTransaction = {
-  validUntil: Math.floor(Date.now() / 1000) + 360,
-  messages: [
-    {
-      address: contractAddress.toRawString(),
-      amount: toNano(0.05).toString(),
-      payload: body.toBoc().toString("base64") // payload with comment in body
-    }
-  ]
-}
-
 export default App
 
-class GetBetAButton extends React.Component {
-  // This syntax ensures `this` is bound within handleClick.
-  handleClick = () => {
-    console.log('this is GetBetAButton');
-    getTotalBetA()
-  };
-  render() {
-    return (
-      <button onClick={this.handleClick}>
-        GetBetAButton
-      </button>
-    );
-  }
-}
+// class GetBetAButton extends React.Component {
+//   // This syntax ensures `this` is bound within handleClick.
+//   handleClick = () => {
+//     console.log('this is GetBetAButton');
+//     getTotalBetA()
+//   };
+//   render() {
+//     return (
+//       <button onClick={this.handleClick}>
+//         GetBetAButton
+//       </button>
+//     );
+//   }
+// }
 
-class SendBetOnAButton extends React.Component {
-  // This syntax ensures `this` is bound within handleClick.
-  handleClick = () => {
-    console.log('this is SendBetOnAButton');
-    sendMessage()
-  };
-  render() {
-    return (
-      <button onClick={this.handleClick}>
-        SendBetOnAButton
-      </button>
-    );
-  }
-}
+// class SendBetOnAButton extends React.Component {
+//   // This syntax ensures `this` is bound within handleClick.
+//   handleClick = () => {
+//     console.log('this is SendBetOnAButton');
+//     sendStringMessageAsOwner("1")
+//   };
+//   render() {
+//     return (
+//       <button onClick={this.handleClick}>
+//         SendBetOnAButton
+//       </button>
+//     );
+//   }
+// }
 
-class IsFinButton extends React.Component {
-  // This syntax ensures `this` is bound within handleClick.
-  handleClick = () => {
-    console.log('this is IsFinButton');
-    getIsFinished()
-  };
-  render() {
-    return (
-      <button onClick={this.handleClick}>
-        IsFinButton
-      </button>
-    );
-  }
-}
+// class IsFinButton extends React.Component {
+//   // This syntax ensures `this` is bound within handleClick.
+//   handleClick = () => {
+//     console.log('this is IsFinButton');
+//     getIsFinished()
+//   };
+//   render() {
+//     return (
+//       <button onClick={this.handleClick}>
+//         IsFinButton
+//       </button>
+//     );
+//   }
+// }
 
-class FinishButton extends React.Component {
-  // This syntax ensures `this` is bound within handleClick.
-  handleClick = () => {
-    console.log('this is FinishButton');
-    finish()
-  };
-  render() {
-    return (
-      <button onClick={this.handleClick}>
-        FinishButton
-      </button>
-    );
-  }
-}
+// class FinishButton extends React.Component {
+//   // This syntax ensures `this` is bound within handleClick.
+//   handleClick = () => {
+//     console.log('this is FinishButton');
+//     finish()
+//   };
+//   render() {
+//     return (
+//       <button onClick={this.handleClick}>
+//         FinishButton
+//       </button>
+//     );
+//   }
+// }

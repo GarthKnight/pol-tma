@@ -3,7 +3,7 @@ import {
   TupleBuilder,
   TupleReader,
 } from "@ton/core";
-import { storeFinalize } from "./wrappers";
+import { storeFinalize, loadTupleTrumpBiden } from "./wrappers";
 
 export default class MyContract implements Contract {
 
@@ -25,10 +25,10 @@ export default class MyContract implements Contract {
     return result;
   }
 
-  async sendBetOnA(provider: ContractProvider, via: Sender) {
+  async sendTextMessage(provider: ContractProvider, via: Sender, message: string) {
     const messageBody = beginCell()
       .storeUint(0, 32)
-      .storeStringTail("1")
+      .storeStringTail(message)
       .endCell();
 
     await provider.internal(via, {
@@ -49,11 +49,3 @@ export default class MyContract implements Contract {
   constructor(readonly address: Address, readonly init?: { code: Cell, data: Cell }) { }
 }
 
-function loadTupleTrumpBiden(source: TupleReader) {
-  let _bet_a_name = source.readString();
-  let _bet_b_name = source.readString();
-  let _image = source.readString();
-  let _odds_a = source.readBigNumber();
-  let _odds_b = source.readBigNumber();
-  return { $$type: 'TrumpBiden' as const, bet_a_name: _bet_a_name, bet_b_name: _bet_b_name, image: _image, odds_a: _odds_a, odds_b: _odds_b };
-}
