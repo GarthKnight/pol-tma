@@ -20,10 +20,7 @@ function App() {
   return (
 
     <TonConnectUIProvider
-      manifestUrl="https://garthknight.github.io/pol-tma/tonconnect-manifest.json"
-      actionsConfiguration={{
-        twaReturnUrl: 'https://t.me/Polygame_bot'
-      }}
+      manifestUrl="https://garthknight.github.io/jsonstorage/tonconnect-manifest.json"
     >
       {
         <div className='app'>
