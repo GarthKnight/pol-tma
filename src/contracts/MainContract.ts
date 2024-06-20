@@ -1,7 +1,5 @@
 import {
-  Contract, ContractProvider, Sender, Address, Cell, contractAddress, beginCell, Builder,
-  TupleBuilder,
-  TupleReader,
+  Contract, ContractProvider, Sender, Address, Cell, beginCell, TupleBuilder
 } from "@ton/core";
 import { storeFinalize, loadTupleTrumpBiden } from "./wrappers";
 

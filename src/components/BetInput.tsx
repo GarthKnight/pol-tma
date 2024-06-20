@@ -9,7 +9,7 @@ interface InputProps {
 
 const BetInput: React.FC<InputProps> = ({ onConfirm, bet }) => {
   const [tonConnectUI] = useTonConnectUI();
-  const [amount, setInputValue] = useState<string>('');
+  const [amount, setInputValue] = useState<string>('1');
   const [isValid, setIsValid] = useState<boolean>(true);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
