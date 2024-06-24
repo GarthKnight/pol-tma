@@ -1,56 +1,93 @@
 import { getHttpEndpoint } from "@orbs-network/ton-access";
 import { TonClient, Address } from "@ton/ton";
-import MyContract from "./MainContract";
+import ChildContract from "./ChildContract";
 import { Constants } from "./Constants";
+import ParentContract from "./ParentContract";
 
-const contractAddress = Address.parse(Constants.addressString);
-
-export async function getIsFinished() {
-    // initialize ton rpc client on testnet
+async function getChildContract(addressString: string) {
+    const contractAddress = Address.parse(addressString);
     const endpoint = await getHttpEndpoint({ network: "testnet" });
     const client = new TonClient({ endpoint });
-
-    // open Counter instance by address
-    // replace with your address from step 8
-    const counter = new MyContract(contractAddress);
-    const counterContract = client.open(counter);
-
-    // call the getter on chain
-    const counterValue = await counterContract.getIsFinalized();
-    console.log("value 2:", counterValue.toString());
+    const contract = new ChildContract(contractAddress);
+    const child = client.open(contract);
+    return child
 }
 
-export async function getTotalBetA() {
-    // initialize ton rpc client on testnet
+async function getParentContract() {
+    const contractAddress = Address.parse(Constants.addressString);
     const endpoint = await getHttpEndpoint({ network: "testnet" });
     const client = new TonClient({ endpoint });
+    const contract = new ParentContract(contractAddress);
+    const parent = client.open(contract);
+    return parent
+}
+//real data uncomment 
+// export async function fetchContracts() {
+//     const contract = await getParentContract();
+//     const addressMap = await contract.getGetAllAddresses();
+//     console.log("fetchContracts: ", addressMap.size.toString());
+//     return addressMap.values
+// }
 
-    // open Counter instance by address
-    // replace with your address from step 8
-    const counter = new MyContract(contractAddress);
-    const counterContract = client.open(counter);
+//mock - delete later
+export async function fetchContracts() {
+    // Simulating an API call
+    return new Promise<Address[]>(resolve => {
+        setTimeout(() => {
+            resolve([
+                Address.parse("EQC8PZ6eph5sE8G3xpStA4fGJdsIrxc1uI0NioP_n-X0L-pM"),
+                Address.parse("EQC8PZ6eph5sE8G3xpStA4fGJdsIrxc1uI0NioP_n-X0L-pM"),
+                Address.parse("EQC8PZ6eph5sE8G3xpStA4fGJdsIrxc1uI0NioP_n-X0L-pM"),
+                Address.parse("EQC8PZ6eph5sE8G3xpStA4fGJdsIrxc1uI0NioP_n-X0L-pM"),
+                Address.parse("EQC8PZ6eph5sE8G3xpStA4fGJdsIrxc1uI0NioP_n-X0L-pM"),
+                Address.parse("EQC8PZ6eph5sE8G3xpStA4fGJdsIrxc1uI0NioP_n-X0L-pM"),
+                Address.parse("EQC8PZ6eph5sE8G3xpStA4fGJdsIrxc1uI0NioP_n-X0L-pM"),
+                Address.parse("EQC8PZ6eph5sE8G3xpStA4fGJdsIrxc1uI0NioP_n-X0L-pM"),
+                Address.parse("EQC8PZ6eph5sE8G3xpStA4fGJdsIrxc1uI0NioP_n-X0L-pM"),
+                Address.parse("EQC8PZ6eph5sE8G3xpStA4fGJdsIrxc1uI0NioP_n-X0L-pM"),
+                Address.parse("EQC8PZ6eph5sE8G3xpStA4fGJdsIrxc1uI0NioP_n-X0L-pM"),
+                Address.parse("EQC8PZ6eph5sE8G3xpStA4fGJdsIrxc1uI0NioP_n-X0L-pM"),
+                Address.parse("EQC8PZ6eph5sE8G3xpStA4fGJdsIrxc1uI0NioP_n-X0L-pM"),
+                Address.parse("EQC8PZ6eph5sE8G3xpStA4fGJdsIrxc1uI0NioP_n-X0L-pM"),
+                Address.parse("EQC8PZ6eph5sE8G3xpStA4fGJdsIrxc1uI0NioP_n-X0L-pM"),
+                Address.parse("EQC8PZ6eph5sE8G3xpStA4fGJdsIrxc1uI0NioP_n-X0L-pM"),
+                Address.parse("EQC8PZ6eph5sE8G3xpStA4fGJdsIrxc1uI0NioP_n-X0L-pM")
+            ]);
+        }, 2000); // 2 second delay
+    });
+};
 
-    // call the getter on chain
-    const counterValue = await counterContract.getTotalBetA();
-    console.log("value:", counterValue.toString());
+export async function getIsFinished(address: string) {
+    const contract = await getChildContract(address);
+    const counterValue = await contract.getIsFinalized();
+    console.log("getIsFinished:", counterValue.toString());
 }
 
-export async function getGetTrumpBidenData() {
-    // initialize ton rpc client on testnet
-    const endpoint = await getHttpEndpoint({ network: "testnet" });
-    const client = new TonClient({ endpoint });
+export async function getChildContractData(address: string) {
+    const contract = await getChildContract(address);
 
-    // open Counter instance by address
-    // replace with your address from step 8
-    const counter = new MyContract(contractAddress);
-    const counterContract = client.open(counter);
+    const betInfo = await contract.getGetBetInfo();
+    const odd_a = await contract.getGetoddA();
+    const odd_b = await contract.getGetoddB();
 
-    // call the getter on chain
-    const trump = await counterContract.getGetTrumpBidenData();
+    const result = {
+        $$type: "ChildContractData",
+        title: betInfo.title,
+        source: betInfo.source,
+        bet_a_name: betInfo.bet_a_name,
+        bet_b_name: betInfo.bet_b_name,
+        image: betInfo.image,
+        odd_a: odd_a,
+        odd_b: odd_b
+    }
 
-    console.log("value:", trump.bet_a_name);
-    console.log("value:", trump.bet_b_name);
-    console.log("value:", trump.image);
-    console.log("value:", trump.odds_a);
-    console.log("value:", trump.odds_b);
+    console.log("value:", betInfo.title);
+    console.log("value:", betInfo.source);
+    console.log("value:", betInfo.bet_a_name);
+    console.log("value:", betInfo.bet_b_name);
+    console.log("value:", betInfo.image);
+    console.log("value:", odd_a);
+    console.log("value:", odd_b);
+
+    return result
 }

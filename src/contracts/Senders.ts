@@ -2,7 +2,7 @@
 import { getHttpEndpoint } from "@orbs-network/ton-access";
 import { mnemonicToWalletKey } from "ton-crypto";
 import { TonClient, WalletContractV4, Address, beginCell, toNano } from "@ton/ton";
-import MyContract from "./MainContract";
+import ChildContract from "./ChildContract";
 import { Constants } from "./Constants";
 import { SendTransactionRequest, TonConnect, TonConnectUI, useTonConnectUI } from "@tonconnect/ui-react";
 
@@ -25,7 +25,7 @@ export async function sendStringMessageAsOwner(message: string) {
 
     // open Counter instance by address
     const counterAddress = Address.parse(Constants.addressString);
-    const contract = new MyContract(counterAddress);
+    const contract = new ChildContract(counterAddress);
     const counterContract = client.open(contract);
 
     // send the increment transaction
@@ -62,7 +62,7 @@ export function createTransactionForStringMessage(message: string, amount: strin
     return myTransaction
 }
 
-export async function finish() {
+export async function finishBet(addressString: string) {
     // initialize ton rpc client on testnet
     const endpoint = await getHttpEndpoint({ network: "testnet" });
     const client = new TonClient({ endpoint });
@@ -80,8 +80,8 @@ export async function finish() {
     const seqno = await walletContract.getSeqno();
 
     // open Counter instance by address
-    const counterAddress = Address.parse(Constants.addressString);
-    const contract = new MyContract(counterAddress);
+    const counterAddress = Address.parse(addressString);
+    const contract = new ChildContract(counterAddress);
     const counterContract = client.open(contract);
 
     // send the increment transaction
