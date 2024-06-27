@@ -17,14 +17,14 @@ export default class ChildContract implements Contract {
     let source = (await provider.get('getoddA', builder.build())).stack;
     let result = source.readBigNumber();
     return result;
-}
+  }
 
-async getGetoddB(provider: ContractProvider) {
+  async getGetoddB(provider: ContractProvider) {
     let builder = new TupleBuilder();
     let source = (await provider.get('getoddB', builder.build())).stack;
     let result = source.readBigNumber();
     return result;
-}
+  }
 
   async getIsFinalized(provider: ContractProvider) {
     const { stack } = await provider.get("finalize", []);
@@ -56,14 +56,14 @@ async getGetoddB(provider: ContractProvider) {
   constructor(readonly address: Address, readonly init?: { code: Cell, data: Cell }) { }
 }
 
-export type ChildContractData = {
-  $$type: 'ChildContractData';
+export type BetInfo = {
+  $$type: 'BetInfo';
   title: string;
   source: string;
   bet_a_name: string;
   bet_b_name: string;
   image: string;
-  odd_a: bigint;
-  odd_b: bigint;
+  odds_a: bigint;
+  odds_b: bigint;
 }
 

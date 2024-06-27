@@ -47,5 +47,7 @@ export function loadTupleBetInfo(source: TupleReader) {
     let _bet_a_name = source.readString();
     let _bet_b_name = source.readString();
     let _image = source.readString();
-    return { $$type: 'BetInfo' as const, title: _title, source: _source, bet_a_name: _bet_a_name, bet_b_name: _bet_b_name, image: _image };
+    let _odds_a = source.readBigNumber();
+    let _odds_b = source.readBigNumber();
+    return { $$type: 'BetInfo' as const, title: _title, source: _source, bet_a_name: _bet_a_name, bet_b_name: _bet_b_name, image: _image, odds_a: _odds_a, odds_b: _odds_b };
 }

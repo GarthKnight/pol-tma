@@ -5,9 +5,10 @@ import { useTonConnectUI } from '@tonconnect/ui-react';
 interface InputProps {
   onConfirm: () => void;
   bet: string;
+  address: string;
 }
 
-const BetInput: React.FC<InputProps> = ({ onConfirm, bet }) => {
+const BetInput: React.FC<InputProps> = ({ onConfirm, bet, address }) => {
   const [tonConnectUI] = useTonConnectUI();
   const [amount, setInputValue] = useState<string>('1');
   const [isValid, setIsValid] = useState<boolean>(true);
@@ -24,7 +25,7 @@ const BetInput: React.FC<InputProps> = ({ onConfirm, bet }) => {
 
   const handleSubmit = () => {
     if (isValid && amount !== "") {
-      tonConnectUI.sendTransaction(createTransactionForStringMessage(bet, amount))
+      tonConnectUI.sendTransaction(createTransactionForStringMessage(bet, amount, address))
       onConfirm()
     }
   }

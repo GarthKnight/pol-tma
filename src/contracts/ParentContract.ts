@@ -18,7 +18,7 @@ export default class ParentContract implements Contract {
         const messageBody = beginCell().store(storeBetInfoInit(betInfo)).endCell();
 
         await provider.internal(via, {
-            value: "0.004", // send 0.004 TON for gas
+            value: "0.3", // send 0.004 TON for gas
             body: messageBody
         })
 
