@@ -9,8 +9,7 @@ eruda.init()
 
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
-  // <TonConnectUIProvider manifestUrl={manifestUrl}>
-
-  // </TonConnectUIProvider>,
-  <App />,
+  <TonConnectUIProvider manifestUrl={manifestUrl}>
+    <App />
+  </TonConnectUIProvider>,
 )
