@@ -7,14 +7,16 @@ import HomePage from './pages/HomePage';
 
 function App() {
   return (
-      <HashRouter>
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/list" element={<ListPage />} />
-          <Route path="/create" element={<CreatePage />} />
-          <Route path="/bet" element={<BetPage />} />
-        </Routes>
-      </HashRouter>
+    <div>
+      <h1>TOP</h1>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/list" element={<ListPage />} />
+        <Route path="/create" element={<CreatePage />} />
+        <Route path="/bet" element={<BetPage />} />
+      </Routes>
+    </div>
+
   );
 }
 
