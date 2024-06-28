@@ -8,7 +8,8 @@ const manifestUrl = 'https://garthknight.github.io/jsonstorage/tonconnect-manife
 eruda.init()
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
-  <TonConnectUIProvider manifestUrl={manifestUrl}>
-    <App />
-  </TonConnectUIProvider>,
+  // <TonConnectUIProvider manifestUrl={manifestUrl}>
+    
+  // </TonConnectUIProvider>,
+  <App />
 )
