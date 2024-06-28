@@ -7,9 +7,10 @@ import eruda from 'eruda';
 const manifestUrl = 'https://garthknight.github.io/jsonstorage/tonconnect-manifest.json';
 eruda.init()
 
+
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   // <TonConnectUIProvider manifestUrl={manifestUrl}>
-    
+
   // </TonConnectUIProvider>,
-  <App />
+  <App />,
 )

@@ -4,11 +4,9 @@ import BetPage from './pages/BetPage';
 import ListPage from './pages/ListPage';
 import CreatePage from './pages/CreatePage';
 import HomePage from './pages/HomePage';
-import React from 'react';
 
 function App() {
   return (
-    <React.StrictMode>
       <HashRouter>
         <Routes>
           <Route path="/" element={<HomePage />} />
@@ -17,7 +15,6 @@ function App() {
           <Route path="/bet" element={<BetPage />} />
         </Routes>
       </HashRouter>
-    </React.StrictMode>
   );
 }
 
