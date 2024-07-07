@@ -1,14 +1,14 @@
 import {
   Contract, ContractProvider, Sender, Address, Cell, beginCell, TupleBuilder
 } from "@ton/core";
-import { storeFinalize, loadTupleBetInfo } from "./wrappers";
+import * as wrappers from "./wrappers";
 
 export default class ChildContract implements Contract {
 
   async getGetBetInfo(provider: ContractProvider) {
     let builder = new TupleBuilder();
     let source = (await provider.get('getBetInfo', builder.build())).stack;
-    const result = loadTupleBetInfo(source);
+    const result = wrappers.loadTupleBetInfo(source);
     return result;
   }
 
@@ -45,7 +45,7 @@ export default class ChildContract implements Contract {
   }
 
   async sendFinishBet(provider: ContractProvider, via: Sender) {
-    const messageBody = beginCell().store(storeFinalize({ $$type: "Finalize", outcome_a_wins: true })).endCell();
+    const messageBody = beginCell().store(wrappers.storeFinalize({ $$type: "Finalize", outcome_a_wins: true })).endCell();
 
     await provider.internal(via, {
       value: "0.3", // send 0.002 TON for gas
@@ -56,14 +56,8 @@ export default class ChildContract implements Contract {
   constructor(readonly address: Address, readonly init?: { code: Cell, data: Cell }) { }
 }
 
-export type BetInfo = {
-  $$type: 'BetInfo';
-  title: string;
-  source: string;
-  bet_a_name: string;
-  bet_b_name: string;
-  image: string;
-  odds_a: bigint;
-  odds_b: bigint;
+export type Bet = {
+  $$type: 'Bet';
+  betInfo: wrappers.BetInfo;
+  address: Address;
 }
-

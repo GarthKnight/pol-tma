@@ -4,7 +4,6 @@ import { mnemonicToWalletKey } from "ton-crypto";
 import { TonClient, WalletContractV4, Address, beginCell, toNano } from "@ton/ton";
 import ChildContract from "./ChildContract";
 import { Constants } from "./Constants";
-import { SendTransactionRequest, TonConnect, TonConnectUI, useTonConnectUI } from "@tonconnect/ui-react";
 import ParentContract from "./ParentContract";
 
 export async function sendStringMessageAsOwner(message: string) {

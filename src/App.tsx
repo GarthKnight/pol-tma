@@ -7,8 +7,7 @@ import HomePage from './pages/HomePage';
 
 function App() {
   return (
-    <div>
-      <h1>TOP</h1>
+    <div className='app'>
       <Routes>
         < Route path="" element={<HomePage />} />
         <Route path="/" element={<HomePage />} />

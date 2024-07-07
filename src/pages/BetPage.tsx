@@ -1,41 +1,24 @@
 import { TonConnectButton } from '@tonconnect/ui-react';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Address } from 'ton-core';
 import DialogComponent from '../components/DialogComponent';
 import BetInput from '../components/BetInput';
-import { getBetInfo } from '../contracts/Getters';
-import { BetInfo } from '../contracts/ChildContract';
+import { Bet } from '../contracts/ChildContract';
+import { Box, IconButton as MuiIconButton, Typography } from '@mui/material';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+
 
 interface LocationState {
-    state: BetPageInfo;
+    state: string;
 }
 
 const BetPage: React.FC = () => {
     const location = useLocation();
     const { state } = location as LocationState;
+    const bet = deserializeBet(state)
     const navigate = useNavigate();
 
-    //fetching data start 
-    const [loading, setLoading] = useState<boolean>(true);
-    const [betInfo, setBetInfo] = useState<BetInfo>();
-
-    useEffect(() => {
-        const loadContractsData = async () => {
-            setLoading(true);
-            try {
-                const result = await getBetInfo(state.address.toString());
-                setBetInfo(result);
-            } catch (error) {
-                console.error("Error fetching data: ", error);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        loadContractsData();
-    }, []);
-    //fetching data end 
+    console.log("Bet address: ", bet.address.toString())
 
     const [openBetDialog, setOpenDialog] = useState(false);
     const [betType, setBetString] = useState('');
@@ -50,29 +33,40 @@ const BetPage: React.FC = () => {
     };
 
     return (
-        <div className='app'>
-            <h1>About Page</h1>
-            <TonConnectButton />
-            {state && <p>{state.address.toString()}</p>}
+        <div>
+            <div className='bet-header '>
+                <MuiIconButton onClick={() => navigate('/')} aria-label="go back">
+                    <ArrowBackIcon />
+                </MuiIconButton>
 
-            <button onClick={() => navigate('/')}>GO BACK</button>
+                <TonConnectButton style={{ marginRight: 20 }} />
+            </div>
+
+            <Typography variant="h4" sx={{
+                color: 'black', display: 'flex',
+                justifyContent: 'center',
+            }}>
+                {bet.betInfo.title}
+            </Typography>
+
+            <div style={{ display: 'flex', justifyContent: 'center' }}>
+                <CenterCropImage imageUrl={bet.betInfo.image} />
+            </div>
+
+            <Typography variant="body1" sx={{
+                color: 'black',
+                display: 'flex',
+                justifyContent: 'center'
+            }}>
+                {bet.betInfo.source}
+            </Typography>
+
+            <div className="button-container">
+                <button onClick={() => handleOpenDialog('1')}>{bet.betInfo.bet_a_name.concat(": ").concat(getCoefficent(bet.betInfo.odds_a))}</button>
+                <button onClick={() => handleOpenDialog('2')}>{bet.betInfo.bet_b_name.concat(": ").concat(getCoefficent(bet.betInfo.odds_b))}</button>
+            </div>
 
 
-            {loading ? (
-                <div>Loading...</div>
-            ) : (
-                <div className='app'>
-                    <img src={betInfo?.image} alt={"Netuti"} style={{ maxWidth: '100%', height: 'auto' }} />
-                    <p>{betInfo?.title}</p>
-                    <p>{betInfo?.source}</p>
-                    <div className="button-container">
-                        <button onClick={() => handleOpenDialog('1')}>{betInfo?.bet_a_name.concat(": ").concat(betInfo?.odds_a?.toString())}</button>
-                        <button onClick={() => handleOpenDialog('2')}>{betInfo?.bet_b_name.concat(": ").concat(betInfo?.odds_b?.toString())}</button>
-                    </div>
-
-                </div>
-            )
-            }
 
             <DialogComponent
                 open={openBetDialog}
@@ -82,7 +76,7 @@ const BetPage: React.FC = () => {
                     <BetInput
                         onConfirm={handleCloseDialog}
                         bet={betType}
-                        address={state.address.toString()}
+                        address={bet.address.toString()}
                     />
                 }
                 bet={betType}
@@ -91,8 +85,40 @@ const BetPage: React.FC = () => {
     );
 }
 
-export default BetPage;
-
-export interface BetPageInfo {
-    address: string;
+function getCoefficent(coef: bigint): string {
+    return (1 + Number(coef) / 1000).toFixed(3).toString()
 }
+
+function deserializeBet(json: string): Bet {
+    return JSON.parse(json, (key, value) =>
+        typeof value === 'string' && /^\d+n$/.test(value) ? BigInt(value.slice(0, -1)) : value
+    );
+}
+
+const CenterCropImage: React.FC<{ imageUrl: string }> = ({ imageUrl }) => {
+    return (
+        <Box
+            sx={{
+                width: '25%', // 25% of the container width
+                height: '25%', // 25% of the container height
+                position: 'relative',
+                borderRadius: '16px', // Rounded corners
+                overflow: 'hidden', // Ensure image is cropped
+            }}
+        >
+            <img
+                src={imageUrl}
+                alt="Center cropped image"
+                style={{
+                    width: '100%', // Ensures the image fills the container
+                    height: '100%', // Ensures the image fills the container
+                    objectFit: 'cover', // Cover the box with the image
+                    objectPosition: 'center', // Center the image
+                }}
+            />
+        </Box>
+    );
+};
+
+
+export default BetPage;

@@ -1,0 +1,35 @@
+.bet-item {
+    background-color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .content {
+    text-align: center;
+  }
+  
+  .rectangles {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 12px;
+  }
+  
+  .rectangle {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+  }
+  
+  .rectangle.red {
+    background-color: red;
+  }
+  
+  .rectangle.green {
+    background-color: green;
+  }
+  
