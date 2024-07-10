@@ -10,6 +10,8 @@ import ListItemText from '@mui/material/ListItemText';
 import Typography from '@mui/material/Typography';
 import { Box } from '@mui/material';
 import { Bet } from '../contracts/ChildContract';
+import { BetInfo } from '../contracts/wrappers';
+import CenterCropImage from '../components/CenterCropImage';
 
 const ListPage: React.FC = () => {
 
@@ -22,7 +24,7 @@ const ListPage: React.FC = () => {
     const loadContractsData = async () => {
       setLoading(true);
       try {
-        const result = await fetchContractsWithData();
+        const result = await fetchContractsWithData(true);
         setData(result);
       } catch (error) {
         console.error("Error fetching data: ", error);
@@ -45,44 +47,34 @@ const ListPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState(0);
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
+    console.log("tab: ", newValue)
     setActiveTab(newValue);
   };
 
 
   return (
     <div className='listpage'>
-      <div className="tabs">
-        <div className="tabs">
-          <TabsComponent activeTab={activeTab} handleTabChange={handleTabChange} />
-        </div>
-      </div>
+
+      <TabsComponent activeTab={activeTab} handleTabChange={handleTabChange} />
+
       <div className="list">
         {loading ? (
           <Typography variant="h4" sx={{
-            color: 'black', display: 'flex',
+            color: 'White', display: 'flex',
             justifyContent: 'center',
             marginTop: '28px'
           }}>
             Loading...
           </Typography>
         ) : (
-          <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
-            {/* result.filter((item) => item.finishDate > 0) */}
-            {data.map(item => (
+          <List sx={{ width: '100%' }}>
+            {data.map((item, i) => (
               <div>
-                <ListItem key={item.betInfo.title} alignItems="center" onClick={() => handleClick(item)}>
-                  <ListItemText
-                    primary={<Typography variant="body1" sx={{ color: 'black' }}>
-                      {item.betInfo.title}
-                    </Typography>
-                    }
-                  />
-                  <CoefficientContainer greenValue={item.betInfo.odds_a} redValue={item.betInfo.odds_b} />
+                <ListItem key={i} alignItems="center" onClick={() => handleClick(item)}>
+                  <BetItem betInfo={item.betInfo} />
                 </ListItem>
-                <Divider variant="fullWidth" component="li" />
               </div>
             ))}
-
           </List>
         )
         }
@@ -91,31 +83,62 @@ const ListPage: React.FC = () => {
   );
 }
 
+const BetItem: React.FC<{ betInfo: BetInfo }> = ({ betInfo }) => {
+  return (
+    <Box
+      sx={{
+        backgroundColor: '#252525',
+        color: 'white',
+        width: '100%',
+        textAlign: 'center',
+        borderRadius: '10px',
+        padding: '16px',
+        boxShadow: 3
+      }}>
+      <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px', marginBottom: '12px' }}>
+
+        <CenterCropImage imageUrl={betInfo.image} width='48px' height='48px' />
+        <Typography variant="body1" sx={{ color: 'white' }}>
+          {betInfo.title}
+        </Typography>
+      </div>
+
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
+        <Typography variant="body2" sx={{ color: 'gray' }}>
+          $14.0m Bet
+        </Typography>
+        <CoefficientContainer greenValue={betInfo.odds_a} redValue={betInfo.odds_b} />
+      </div>
+    </Box>
+  );
+}
+
+
+
 const CoefficientContainer: React.FC<{ greenValue: bigint; redValue: bigint }> = ({ greenValue, redValue }) => {
   return (
-    <Box sx={{ display: 'flex', alignItems: 'center', ml: 2 }}>
+    <Box sx={{ display: 'flex' }}>
       <Box
         sx={{
-          backgroundColor: '#388E3C',
-          color: 'white',
+          backgroundColor: 'rgba(0, 190, 162, 0.1)',
+          color: '#15E5C6',
           width: '50px',
           textAlign: 'center',
-          borderTopLeftRadius: '10px',
-          borderBottomLeftRadius: '10px',
-          padding: '2px'
+          borderRadius: '8px',
+          padding: '2px',
+          marginRight: '4px'
         }}
       >
         {getCoefficent(greenValue)}
       </Box>
       <Box
         sx={{
-          backgroundColor: '#F44336',
-          color: 'white',
+          backgroundColor: 'rgba(252, 48, 48, 0.1)',
+          color: '#FC3030',
           width: '50px',
           textAlign: 'center',
-          borderTopRightRadius: '10px',
-          borderBottomRightRadius: '10px',
-          padding: '2px'
+          borderRadius: '8px',
+          padding: '2px',
         }}
       >
         {getCoefficent(redValue)}

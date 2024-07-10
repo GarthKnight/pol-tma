@@ -6,6 +6,7 @@ import BetInput from '../components/BetInput';
 import { Bet } from '../contracts/ChildContract';
 import { Box, IconButton as MuiIconButton, Typography } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import CenterCropImage from '../components/CenterCropImage';
 
 
 interface LocationState {
@@ -50,7 +51,7 @@ const BetPage: React.FC = () => {
             </Typography>
 
             <div style={{ display: 'flex', justifyContent: 'center' }}>
-                <CenterCropImage imageUrl={bet.betInfo.image} />
+                <CenterCropImage imageUrl={bet.betInfo.image} width='25%' height='25%' />
             </div>
 
             <Typography variant="body1" sx={{
@@ -94,31 +95,5 @@ function deserializeBet(json: string): Bet {
         typeof value === 'string' && /^\d+n$/.test(value) ? BigInt(value.slice(0, -1)) : value
     );
 }
-
-const CenterCropImage: React.FC<{ imageUrl: string }> = ({ imageUrl }) => {
-    return (
-        <Box
-            sx={{
-                width: '25%', // 25% of the container width
-                height: '25%', // 25% of the container height
-                position: 'relative',
-                borderRadius: '16px', // Rounded corners
-                overflow: 'hidden', // Ensure image is cropped
-            }}
-        >
-            <img
-                src={imageUrl}
-                alt="Center cropped image"
-                style={{
-                    width: '100%', // Ensures the image fills the container
-                    height: '100%', // Ensures the image fills the container
-                    objectFit: 'cover', // Cover the box with the image
-                    objectPosition: 'center', // Center the image
-                }}
-            />
-        </Box>
-    );
-};
-
 
 export default BetPage;
