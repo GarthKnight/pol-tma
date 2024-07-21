@@ -59,5 +59,5 @@ export default class ChildContract implements Contract {
 export type Bet = {
   $$type: 'Bet';
   betInfo: wrappers.BetInfo;
-  address: Address;
+  address: string;
 }

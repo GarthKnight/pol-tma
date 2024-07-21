@@ -3,6 +3,8 @@ import { TonClient, Address } from "@ton/ton";
 import ChildContract, { Bet } from "./ChildContract";
 import { Constants } from "./Constants";
 import ParentContract from "./ParentContract";
+import { useTonAddress, useTonWallet } from "@tonconnect/ui-react";
+import { Add } from "@mui/icons-material";
 
 async function getChildContract(addressString: string) {
     const contractAddress = Address.parse(addressString);
@@ -21,7 +23,6 @@ async function getParentContract() {
     const parent = client.open(contract);
     return parent
 }
-//real data uncomment 
 export async function fetchContracts() {
     const contract = await getParentContract();
     const addressMap = await contract.getGetAllAddresses();
@@ -29,31 +30,37 @@ export async function fetchContracts() {
     return addressMap.values()
 }
 
-export async function fetchContractsWithData(active: boolean) {
+export async function fetchBetsByAddress(address: string) {
+    const contract = await getParentContract();
+    const map = await contract.getGetUserBets(Address.parse(address));
+    map.values().forEach(element => {
+        console.log("address: ", element.betContract.toString());
+    });
+    return map
+}
+
+export async function fetchContractsWithData() {
     const contract = await getParentContract();
     const addressMap = await contract.getGetAllAddresses();
-    console.log("fetchContracts: ", addressMap.size.toString());
 
     let result: Bet[] = [];
 
     for (const address of addressMap.values()) {
-        console.log("fetchContracts: ", address.toString())
-
         const betInfo = await getBetInfo(address.toString())
-        const isFinish = await getIsFinished(address.toString())
+        result.push({ $$type: "Bet", betInfo: betInfo, address: address.toString() })
+    }
 
-        console.log("is finish: ", isFinish)
+    return result
+}
 
+export async function fetchMyBets(address: string) {
+    const contract = await getParentContract();
+    const addressMap = await contract.getGetUserBets(Address.parse(address));
+    let result: Bet[] = [];
 
-        // if (active && betInfo.finishDate === BigInt(0)) {
-        //     console.log("BET IS ACTIVE: ", betInfo.title)
-            result.push({ $$type: "Bet", betInfo: betInfo, address: address })
-        // }
-
-        if (!active && betInfo.finishDate > BigInt(0)) {
-            console.log("BET IS EXPIRED: ", betInfo.title)
-            result.push({ $$type: "Bet", betInfo: betInfo, address: address })
-        }
+    for (const address of addressMap.values()) {
+        const betInfo = await getBetInfo(address.betContract.toString())
+        result.push({ $$type: "Bet", betInfo: betInfo, address: address.toString() })
     }
 
     return result
@@ -62,7 +69,7 @@ export async function fetchContractsWithData(active: boolean) {
 export async function getIsFinished(address: string) {
     const contract = await getChildContract(address);
     const isFinished = await contract.getIsFinalized();
-    console.log("getIsFinished:", isFinished.toString());
+    // console.log("getIsFinished:", isFinished.toString());
     return isFinished
 }
 
@@ -71,8 +78,8 @@ export async function getBetInfo(address: string) {
 
     const betInfo = await contract.getGetBetInfo();
 
-    console.log("title:", betInfo.title);
-    console.log("finish date:", betInfo.finishDate);
+    // console.log("title:", betInfo.title);
+    // console.log("finish date:", betInfo.finishDate);
 
     return betInfo
 }

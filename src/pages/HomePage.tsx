@@ -4,9 +4,10 @@ import { useNavigate } from 'react-router-dom';
 import './HomePage.css'; // Adjust the path to match your CSS file location
 import { Button, ButtonProps, Typography } from '@mui/material';
 
-
 const HomePage: React.FC = () => {
     const navigate = useNavigate();
+
+
     return (
         <div className='container'>
             <div className='content'>

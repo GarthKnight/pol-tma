@@ -1,17 +1,16 @@
 // HomePage.tsx
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { fetchContractsWithData } from '../contracts/Getters';
+import { fetchContractsWithData, fetchMyBets } from '../contracts/Getters';
 import TabsComponent from '../components/TabsComponent';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
-import Divider from '@mui/material/Divider';
-import ListItemText from '@mui/material/ListItemText';
 import Typography from '@mui/material/Typography';
-import { Box } from '@mui/material';
+import { Box, CircularProgress } from '@mui/material';
 import { Bet } from '../contracts/ChildContract';
 import { BetInfo } from '../contracts/wrappers';
 import CenterCropImage from '../components/CenterCropImage';
+import { useTonAddress, useTonConnectUI } from '@tonconnect/ui-react';
 
 const ListPage: React.FC = () => {
 
@@ -19,21 +18,52 @@ const ListPage: React.FC = () => {
   //load list of contracts
   const [loading, setLoading] = useState<boolean>(true);
   const [data, setData] = useState<Bet[]>([]);
+  const userFriendlyAddress = useTonAddress();
+  const [tonConnectUI] = useTonConnectUI();
 
-  useEffect(() => {
-    const loadContractsData = async () => {
-      setLoading(true);
+
+  const loadContractsData = async (type: number) => {
+    const retry = async () => {
       try {
-        const result = await fetchContractsWithData(true);
+        setLoading(true);
+        setActiveTab(0)
+        const result = await fetchContractsWithData();
         setData(result);
       } catch (error) {
         console.error("Error fetching data: ", error);
       } finally {
         setLoading(false);
       }
-    };
+    }
 
-    loadContractsData();
+    setLoading(true);
+    try {
+      console.log("type: ", type)
+      if (type == 0) {
+        const result = await fetchContractsWithData();
+        setData(result);
+      } else {
+        const result = await fetchMyBets(userFriendlyAddress);
+        setData(result);
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        if (error.message.includes("Unknown address type")) {
+          console.error("Caught the specific 'Unknown address type' error:", error);
+          retry()
+        } else {
+          console.error("Caught a different error:", error);
+        }
+      } else {
+        console.error("Caught a non-error object:", error);
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadContractsData(activeTab);
   }, []);
   //fetching data end 
 
@@ -44,13 +74,24 @@ const ListPage: React.FC = () => {
   };
   //navigation end 
 
+  //tabs start
   const [activeTab, setActiveTab] = useState(0);
-
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
-    console.log("tab: ", newValue)
-    setActiveTab(newValue);
-  };
+    if (newValue == 1 && !tonConnectUI.connected) {
+      tonConnectUI.openModal()
+      return;
+    }
 
+    if (loading) {
+      setActiveTab(activeTab)
+      return;
+    }
+    if (activeTab != newValue) {
+      setActiveTab(newValue);
+      loadContractsData(newValue)
+    }
+  };
+  //tabs end
 
   return (
     <div className='listpage'>
@@ -59,18 +100,20 @@ const ListPage: React.FC = () => {
 
       <div className="list">
         {loading ? (
-          <Typography variant="h4" sx={{
-            color: 'White', display: 'flex',
+          <div style={{
+            display: 'flex',
             justifyContent: 'center',
+            alignItems: 'center',
+            height: '100%',
             marginTop: '28px'
           }}>
-            Loading...
-          </Typography>
+            <CircularProgress sx={{ color: '#15E5C6' }} />
+          </div>
         ) : (
           <List sx={{ width: '100%' }}>
             {data.map((item, i) => (
-              <div>
-                <ListItem key={i} alignItems="center" onClick={() => handleClick(item)}>
+              <div key={i}>
+                <ListItem alignItems="center" onClick={() => handleClick(item)}>
                   <BetItem betInfo={item.betInfo} />
                 </ListItem>
               </div>
@@ -103,9 +146,9 @@ const BetItem: React.FC<{ betInfo: BetInfo }> = ({ betInfo }) => {
         </Typography>
       </div>
 
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <Typography variant="body2" sx={{ color: 'gray' }}>
-          $14.0m Bet
+          {"TON ".concat((betInfo.total_bet_a + betInfo.total_bet_b).toString())}
         </Typography>
         <CoefficientContainer greenValue={betInfo.odds_a} redValue={betInfo.odds_b} />
       </div>

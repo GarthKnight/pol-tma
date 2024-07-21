@@ -2,7 +2,7 @@ import {
     Contract, ContractProvider, Sender, Address, Cell, beginCell, TupleBuilder,
     Dictionary
 } from "@ton/core";
-import { BetInfoInit, storeBetInfoInit } from "./wrappers";
+import { BetInfoInit, dictValueParserBetDetails, storeBetInfoInit } from "./wrappers";
 
 export default class ParentContract implements Contract {
 
@@ -22,6 +22,14 @@ export default class ParentContract implements Contract {
             body: messageBody
         })
 
+    }
+    
+    async getGetUserBets(provider: ContractProvider, user: Address) {
+        let builder = new TupleBuilder();
+        builder.writeAddress(user);
+        let source = (await provider.get('UserBetInfo', builder.build())).stack;
+        let result = Dictionary.loadDirect(Dictionary.Keys.BigInt(257), dictValueParserBetDetails(), source.readCellOpt());
+        return result;
     }
 
     constructor(readonly address: Address, readonly init?: { code: Cell, data: Cell }) { }

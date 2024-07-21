@@ -16,11 +16,11 @@ const CustomTabs = styled(Tabs)({
 const CustomTab = styled(Tab)(({ theme }) => ({
     '&.Mui-selected': {
         backgroundColor: 'transparent',
-        color: '#15E5C6', // Selected text color
+        color: 'white', // Selected text color
         borderBottom: '2px solid #15E5C6', // Custom underline color and thickness
     },
     '&.Mui-selected span': {
-        color: '#15E5C6', // Ensures that the text inside span also gets the color
+        color: 'white', // Ensures that the text inside span also gets the color
     },
     '&:not(.Mui-selected)': {
         color: 'white', // Unselected text color
@@ -37,8 +37,8 @@ const CustomTab = styled(Tab)(({ theme }) => ({
 const TabsComponent: React.FC<TabsComponentProps> = ({ activeTab, handleTabChange }) => {
     return (
         <CustomTabs value={activeTab} onChange={handleTabChange} centered>
-            <CustomTab label="Active bets" />
-            <CustomTab label="Completed bets" />
+            <CustomTab label="Active bets" value={0}/>
+            <CustomTab label="My bets" value={1} />
         </CustomTabs>
     );
 };

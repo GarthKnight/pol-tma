@@ -1,6 +1,11 @@
 import {
+    Address,
     Builder,
+    Dictionary,
+    DictionaryValue,
+    Slice,
     TupleReader,
+    beginCell,
 } from "@ton/core";
 
 export type Finalize = {
@@ -84,4 +89,42 @@ export function loadTupleBetInfo(source: TupleReader) {
     let _total_bet_a = source.readBigNumber();
     let _total_bet_b = source.readBigNumber();
     return { $$type: 'BetInfo' as const, title: _title, source: _source, bet_a_name: _bet_a_name, bet_b_name: _bet_b_name, image: _image, odds_a: _odds_a, odds_b: _odds_b, finishDate: _finishDate, total_bet_a: _total_bet_a, total_bet_b: _total_bet_b };
+}
+
+export type BetDetails = {
+    $$type: 'BetDetails';
+    user: Address;
+    amount: bigint;
+    betContract: Address;
+    outcome: bigint;
+}
+
+export function dictValueParserBetDetails(): DictionaryValue<BetDetails> {
+    return {
+        serialize: (src, buidler) => {
+            buidler.storeRef(beginCell().store(storeBetDetails(src)).endCell());
+        },
+        parse: (src) => {
+            return loadBetDetails(src.loadRef().beginParse());
+        }
+    }
+}
+
+export function storeBetDetails(src: BetDetails) {
+    return (builder: Builder) => {
+        let b_0 = builder;
+        b_0.storeAddress(src.user);
+        b_0.storeUint(src.amount, 32);
+        b_0.storeAddress(src.betContract);
+        b_0.storeUint(src.outcome, 8);
+    };
+}
+
+export function loadBetDetails(slice: Slice) {
+    let sc_0 = slice;
+    let _user = sc_0.loadAddress();
+    let _amount = sc_0.loadUintBig(32);
+    let _betContract = sc_0.loadAddress();
+    let _outcome = sc_0.loadUintBig(8);
+    return { $$type: 'BetDetails' as const, user: _user, amount: _amount, betContract: _betContract, outcome: _outcome };
 }
