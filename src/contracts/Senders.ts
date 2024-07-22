@@ -43,6 +43,7 @@ export async function sendStringMessageAsOwner(message: string) {
 
 export function createTransactionForStringMessage(message: string, amount: string, address: string) {
     const contractAddress = Address.parse(address);
+    const newAmount = amount.replace(/,/g, ".")
     const body = beginCell()
         .storeUint(0, 32) // write 32 zero bits to indicate that a text comment will follow
         .storeStringTail(message) // write our text comment
@@ -54,7 +55,7 @@ export function createTransactionForStringMessage(message: string, amount: strin
         messages: [
             {
                 address: contractAddress.toRawString(),
-                amount: toNano(amount).toString(),
+                amount: toNano(newAmount).toString(),
                 payload: body.toBoc().toString("base64") // payload with comment in body
             }
         ]

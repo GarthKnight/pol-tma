@@ -1,4 +1,4 @@
-import { TonConnectButton } from '@tonconnect/ui-react';
+import { TonConnectButton, useTonConnectUI } from '@tonconnect/ui-react';
 import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import BetInput from '../components/BetInput';
@@ -12,6 +12,7 @@ import RadioGroup from '@mui/joy/RadioGroup';
 import Sheet from '@mui/joy/Sheet';
 import JoyBox from '@mui/joy/Box';
 import { BetInfo } from '../contracts/wrappers';
+import { createTransactionForStringMessage } from '../contracts/Senders';
 
 
 
@@ -24,26 +25,26 @@ const BetPage: React.FC = () => {
     const { state } = location as LocationState;
     const bet = deserializeBet(state)
     const navigate = useNavigate();
+    const [tonConnectUI] = useTonConnectUI();
 
     const [betType, setBetType] = useState<string>('');
     const handleBetTypeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const value = event.target.value;
         if (value == bet.betInfo.bet_a_name) {
             setBetType("1");
-        } else if (value == bet.betInfo.bet_a_name) {
+        } else if (value == bet.betInfo.bet_b_name) {
             setBetType("2");
         }
-
     };
 
-    const onSubmitPressed = () => {
-
+    const onSubmitPressed = (amount: string) => {
+        tonConnectUI.sendTransaction(createTransactionForStringMessage(betType, amount, bet.address))
     }
 
     return (
         <div>
             <div className='bet-header '>
-                <MuiIconButton onClick={() => navigate('/')} aria-label="go back">
+                <MuiIconButton onClick={() => navigate('/list')} aria-label="go back">
                     <ArrowBackIcon sx={{ color: 'white' }} />
                 </MuiIconButton>
 
@@ -57,7 +58,7 @@ const BetPage: React.FC = () => {
 
             <Typography variant="h5" sx={{
                 color: 'white', display: 'flex',
-                justifyContent: 'center',
+                justifyContent: 'start', ml: 3, mr: 3, mt: 4
             }}>
                 {bet.betInfo.title}
             </Typography>
@@ -65,33 +66,31 @@ const BetPage: React.FC = () => {
             <Typography variant="body1" sx={{
                 color: 'white',
                 display: 'flex',
-                justifyContent: 'center'
+                justifyContent: 'start', ml: 3, mr: 3
             }}>
                 {bet.betInfo.source}
             </Typography>
 
 
-            <div style={{ display: 'flex', justifyContent: 'center', marginTop: '4px' }}>
+            <Box sx={{ display: 'flex', mt: 1 }}>
                 {IconlessRadio(bet.betInfo, handleBetTypeChange)}
-            </div>
+            </Box>
 
-            <div style={{ display: 'flex', justifyContent: 'center', marginTop: '4px' }}>
+            <Box sx={{ display: 'flex', justifyContent: 'start', mt: 2, ml: 3, mr: 3 }}>
                 <BetInput
                     onConfirm={onSubmitPressed}
-                    bet={betType}
-                    address={bet.address}
                 />
-            </div>
+            </Box>
 
 
-        </div>
+        </div >
     );
 }
 
 
 function IconlessRadio(betInfo: BetInfo, handleBetTypeChange: (event: React.ChangeEvent<HTMLInputElement>) => void) {
     return (
-        <JoyBox sx={{ width: 300 }}>
+        <JoyBox sx={{ width: '100%', ml: 3, mr: 3 }}>
             <FormLabel
                 id="bets"
                 sx={{
@@ -101,7 +100,7 @@ function IconlessRadio(betInfo: BetInfo, handleBetTypeChange: (event: React.Chan
                     color: 'white'
                 }}
             >
-                Choose option
+                Choose your option
             </FormLabel>
             <RadioGroup
                 aria-labelledby="bets"

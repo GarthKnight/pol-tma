@@ -1,53 +1,34 @@
 // HomePage.tsx
-import React, { } from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './HomePage.css'; // Adjust the path to match your CSS file location
-import { Button, ButtonProps, Typography } from '@mui/material';
+import { Box, CircularProgress } from '@mui/material';
+import CenterCropImage from '../components/CenterCropImage';
 
 const HomePage: React.FC = () => {
     const navigate = useNavigate();
 
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            navigate('/list')
+        }, 3000);
+        return () => clearTimeout(timer);
+    });
 
     return (
-        <div className='container'>
-            <div className='content'>
-                <Typography variant="h2" sx={{
-                    color: 'white', display: 'flex',
-                    justifyContent: 'center',
-                }}>
-                    (((Polymarket)))
-                </Typography>
-
-                <HomePageButton onClick={() => navigate('/create')}>
-                    Create
-                </HomePageButton>
-
-                <HomePageButton onClick={() => navigate('/list')}>
-                    Browse
-                </HomePageButton>
-            </div >
-        </div >
-    );
-}
-
-const HomePageButton: React.FC<ButtonProps> = ({ children, onClick}) => {
-    return (
-        <Button
-            variant="contained"
-            color="primary"
-            onClick={onClick} 
-            style={{
-                backgroundColor: 'white',
-                color: 'black',
-                borderRadius: 20, // Adjust the value to control the roundness
-                padding: '10px 20px', // Adjust padding as needed
-                marginTop: '8px'
+        <Box
+            sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                height: '100vh', // Full height of the viewport
+                textAlign: 'center'
             }}
         >
-            {children}
-        </Button>
+            <CenterCropImage imageUrl="/friren.jpg" width='200px' height='200px' />
+            <CircularProgress sx={{ color: '#15E5C6', mt: 3 }} />
+        </Box >
     );
-};
-
+}
 
 export default HomePage;
