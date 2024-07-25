@@ -6,12 +6,16 @@ import CreatePage from './pages/CreatePage';
 import HomePage from './pages/HomePage';
 
 function App() {
-  if (window.Telegram.WebApp.initData != null) {
-    console.log("ABOBA: ", window.Telegram.WebApp.initData)
-  } else {
-    console.log("ABOBA: NULL")
-
+  try {
+    if (window.Telegram.WebApp.initData != null) {
+      console.log("ABOBA: ", window.Telegram.WebApp.initData)
+    } else {
+      console.log("ABOBA: NULL")
+    }
+  } catch (error) {
+    console.log("aboba error: ", error)
   }
+
 
   return (
     <div className='app'>
