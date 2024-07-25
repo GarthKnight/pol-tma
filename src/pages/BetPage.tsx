@@ -258,10 +258,13 @@ function deserializeBet(json: string): Bet {
 
 async function copyTextToClipboard(text: string): Promise<void> {
     try {
+        window.Telegram.WebApp.openTelegramLink('https://t.me/share/url?'.concat(text))
         await navigator.clipboard.writeText(text);
         console.log('Text copied to clipboard');
+        alert('Text copied to clipboard!');
     } catch (err) {
         console.error('Failed to copy text: ', err);
+        alert('Failed to copy text to clipboard.');
     }
 }
 
