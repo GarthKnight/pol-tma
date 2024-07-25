@@ -133,8 +133,8 @@ const BetPage: React.FC = () => {
 
             <Box sx={{ display: 'flex', mt: 1, mr: 3, ml: 3, mb: 5, gap: 2 }}>
                 {BetButtons("Share", () => {
-                    if(bet != null){
-
+                    if (bet != null) {
+                        copyTextToClipboard("https://t.me/Polygame_bot/polpol/?startapp=".concat(bet.address))
                     }
                 })}
                 {BetButtons("To Channel", () => {
@@ -254,6 +254,15 @@ function deserializeBet(json: string): Bet {
     return JSON.parse(json, (key, value) =>
         typeof value === 'string' && /^\d+n$/.test(value) ? BigInt(value.slice(0, -1)) : value
     );
+}
+
+async function copyTextToClipboard(text: string): Promise<void> {
+    try {
+        await navigator.clipboard.writeText(text);
+        console.log('Text copied to clipboard');
+    } catch (err) {
+        console.error('Failed to copy text: ', err);
+    }
 }
 
 export default BetPage;

@@ -8,10 +8,26 @@ const HomePage: React.FC = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        const timer = setTimeout(() => {
-            navigate('/list')
-        }, 3000);
-        return () => clearTimeout(timer);
+        try {
+            const startParam = getStartParam(window.Telegram.WebApp.initData);
+            if (startParam != null && startParam !== "") {
+                const timer = setTimeout(() => {
+                    navigate('/bet/'.concat(startParam))
+                }, 2000);
+                return () => clearTimeout(timer);
+            } else {
+                const timer = setTimeout(() => {
+                    navigate('/list')
+                }, 3000);
+                return () => clearTimeout(timer);
+            }
+        } catch (error) {
+            console.log("getting init data error: ", error)
+            const timer = setTimeout(() => {
+                navigate('/list')
+            }, 1000);
+            return () => clearTimeout(timer);
+        }
     });
 
     return (
@@ -29,6 +45,12 @@ const HomePage: React.FC = () => {
             <CircularProgress sx={{ color: '#15E5C6', mt: 3 }} />
         </Box >
     );
+}
+
+function getStartParam(queryString: string): string | null {
+    const decodedString = decodeURIComponent(queryString);
+    const params = new URLSearchParams(decodedString);
+    return params.get('start_param');
 }
 
 export default HomePage;
