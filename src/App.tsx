@@ -6,6 +6,9 @@ import CreatePage from './pages/CreatePage';
 import HomePage from './pages/HomePage';
 
 function App() {
+
+  console.log("ABOBA: ", Telegram.WebApp.initData)
+
   return (
     <div className='app'>
       <Routes>
@@ -13,7 +16,7 @@ function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/list" element={<ListPage />} />
         <Route path="/create" element={<CreatePage />} />
-        <Route path="/bet" element={<BetPage />} />
+        <Route path="/bet/:address" element={<BetPage />} />
       </Routes>
     </div>
 

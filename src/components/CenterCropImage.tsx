@@ -4,25 +4,34 @@ const CenterCropImage: React.FC<{
     imageUrl: string;
     width?: string | number;
     height?: string | number;
-}> = ({ imageUrl, width, height }) => {
+    aspectRatio?: number; // Aspect ratio as a decimal (e.g., 16/9 for 16:9)
+
+}> = ({ imageUrl, width, height, aspectRatio }) => {
     return (
         <Box
             sx={{
-                width: width, // 25% of the container width
-                height: height, // 25% of the container height
+                width: width,
+                height: height,
                 position: 'relative',
-                borderRadius: '8px', // Rounded corners
-                overflow: 'hidden', // Ensure image is cropped
+                borderRadius: '8px',
+                overflow: 'hidden',
+                ...(aspectRatio && {
+                    '&::before': {
+                        content: '""',
+                        display: 'block',
+                        paddingTop: `${(1 / aspectRatio) * 100}%`, // This maintains the aspect ratio
+                    },
+                })
             }}
         >
             <img
                 src={imageUrl}
                 alt="Center cropped image"
                 style={{
-                    width: '100%', // Ensures the image fills the container
-                    height: '100%', // Ensures the image fills the container
-                    objectFit: 'cover', // Cover the box with the image
-                    objectPosition: 'center', // Center the image
+                    width: '100%',
+                    height: '100%',
+                    objectFit: 'cover',
+                    objectPosition: 'center',
                 }}
             />
         </Box>

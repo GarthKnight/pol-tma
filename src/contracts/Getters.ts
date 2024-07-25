@@ -53,6 +53,12 @@ export async function fetchContractsWithData() {
     return result
 }
 
+export async function fetchContractByAddress(address: string): Promise<Bet> {
+    const betInfo = await getBetInfo(address)
+    const result: Bet = { $$type: "Bet", betInfo: betInfo, address: address }
+    return result
+}
+
 export async function fetchMyBets(address: string) {
     const contract = await getParentContract();
     const addressMap = await contract.getGetUserBets(Address.parse(address));

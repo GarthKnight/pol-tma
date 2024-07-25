@@ -1,9 +1,9 @@
 import { TonConnectButton, useTonConnectUI } from '@tonconnect/ui-react';
-import React, { useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import BetInput from '../components/BetInput';
 import { Bet } from '../contracts/ChildContract';
-import { Box, FormControl, FormControlLabel, IconButton as MuiIconButton, Typography } from '@mui/material';
+import { Box, Button, FormControl, FormControlLabel, IconButton as MuiIconButton, Typography } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import CenterCropImage from '../components/CenterCropImage';
 import FormLabel from '@mui/joy/FormLabel';
@@ -13,6 +13,8 @@ import Sheet from '@mui/joy/Sheet';
 import JoyBox from '@mui/joy/Box';
 import { BetInfo } from '../contracts/wrappers';
 import { createTransactionForStringMessage } from '../contracts/Senders';
+import AspectRatio from '@mui/joy/AspectRatio';
+import { fetchContractByAddress } from '../contracts/Getters';
 
 
 
@@ -21,24 +23,53 @@ interface LocationState {
 }
 
 const BetPage: React.FC = () => {
+    const { address } = useParams();
     const location = useLocation();
     const { state } = location as LocationState;
-    const bet = deserializeBet(state)
     const navigate = useNavigate();
     const [tonConnectUI] = useTonConnectUI();
-
+    const [bet, setBet] = useState<Bet | null>(null);
+    const [loading, setLoading] = useState<boolean>(true);
     const [betType, setBetType] = useState<string>('');
+
+    const loadContractData = async () => {
+        setLoading(true);
+        try {
+            if (address != null) {
+                const result = await fetchContractByAddress(address);
+                setBet(result);
+            }
+
+        } catch (error) {
+            console.error("fetch contract data error:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+
+    useEffect(() => {
+        if (state !== null && state !== "") {
+            setBet(deserializeBet(state))
+        } else {
+            loadContractData();
+        }
+
+    }, []);
+
     const handleBetTypeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const value = event.target.value;
-        if (value == bet.betInfo.bet_a_name) {
+        if (value == bet?.betInfo.bet_a_name) {
             setBetType("1");
-        } else if (value == bet.betInfo.bet_b_name) {
+        } else if (value == bet?.betInfo.bet_b_name) {
             setBetType("2");
         }
     };
 
     const onSubmitPressed = (amount: string) => {
-        tonConnectUI.sendTransaction(createTransactionForStringMessage(betType, amount, bet.address))
+        if (bet != null) {
+            tonConnectUI.sendTransaction(createTransactionForStringMessage(betType, amount, bet.address))
+        }
     }
 
     return (
@@ -52,15 +83,33 @@ const BetPage: React.FC = () => {
             </div>
 
             <div style={{ display: 'flex', justifyContent: 'center' }}>
-                <CenterCropImage imageUrl={bet.betInfo.image} width='200px' height='200px' />
+                <AspectRatio
+                    ratio="16/9"
+                    sx={{
+                        width: '100%',
+                        bgcolor: 'transparent',
+                        outline: 'transparent',
+                    }}
+                >
+                    <img
+                        src={bet?.betInfo.image}
+                        alt="img"
+                        style={{
+                            width: '100%',
+                            height: '100%',
+                            objectFit: 'cover',
+                            objectPosition: 'center',
+                        }}
+                    />
+                </AspectRatio>
             </div>
 
 
             <Typography variant="h5" sx={{
                 color: 'white', display: 'flex',
-                justifyContent: 'start', ml: 3, mr: 3, mt: 4
+                justifyContent: 'start', ml: 3, mr: 3, mt: 2
             }}>
-                {bet.betInfo.title}
+                {bet?.betInfo.title}
             </Typography>
 
             <Typography variant="body1" sx={{
@@ -68,12 +117,12 @@ const BetPage: React.FC = () => {
                 display: 'flex',
                 justifyContent: 'start', ml: 3, mr: 3
             }}>
-                {bet.betInfo.source}
+                {bet?.betInfo.source}
             </Typography>
 
 
             <Box sx={{ display: 'flex', mt: 1 }}>
-                {IconlessRadio(bet.betInfo, handleBetTypeChange)}
+                {IconlessRadio(bet?.betInfo, handleBetTypeChange)}
             </Box>
 
             <Box sx={{ display: 'flex', justifyContent: 'start', mt: 2, ml: 3, mr: 3 }}>
@@ -82,13 +131,59 @@ const BetPage: React.FC = () => {
                 />
             </Box>
 
+            <Box sx={{ display: 'flex', mt: 1, mr: 3, ml: 3, mb: 5, gap: 2 }}>
+                {BetButtons("Share", () => {
+                    if(bet != null){
+
+                    }
+                })}
+                {BetButtons("To Channel", () => {
+
+                })}
+            </Box>
+
 
         </div >
     );
 }
 
+function BetButtons(text: string, onChange: () => void) {
+    return (
+        <Button
+            variant="outlined"
+            color="primary"
+            onClick={onChange}
+            sx={{
+                flexGrow: 1, // Make the button take up available space
+                color: '#15E5C6',
+                borderColor: '#15E5C6', // Set the default border color
+                borderRadius: 20, // Adjust the value to control the roundness
+                padding: '8px 16px', // Adjust padding as needed
+                marginTop: '8px',
+                alignSelf: 'flex-start', // Align the Button to the top
 
-function IconlessRadio(betInfo: BetInfo, handleBetTypeChange: (event: React.ChangeEvent<HTMLInputElement>) => void) {
+                '&:hover': {
+                    borderColor: '#15E5C6', // Ensure the border color is consistent on hover
+                    backgroundColor: 'rgba(21, 229, 198, 0.1)' // Optional: Light background color on hover
+                },
+                '&.Mui-focused': {
+                    borderColor: '#15E5C6', // Ensure the border color is consistent when focused
+                    boxShadow: `0 0 0 2px rgba(21, 229, 198, 0.5)` // Optional: Shadow for focus state
+                },
+                '&:focus': {
+                    outline: 'none', // Remove focus outline
+                },
+            }}
+            fullWidth // Ensures the button takes up full width of the container
+        >
+            {text}
+        </Button>
+    )
+}
+
+
+
+function IconlessRadio(betInfo: BetInfo | undefined, handleBetTypeChange: (event: React.ChangeEvent<HTMLInputElement>) => void) {
     return (
         <JoyBox sx={{ width: '100%', ml: 3, mr: 3 }}>
             <FormLabel
@@ -104,12 +199,12 @@ function IconlessRadio(betInfo: BetInfo, handleBetTypeChange: (event: React.Chan
             </FormLabel>
             <RadioGroup
                 aria-labelledby="bets"
-                defaultValue={betInfo.bet_a_name}
+                defaultValue={betInfo?.bet_a_name}
                 size="lg"
                 sx={{ gap: 1.5 }}
                 onChange={handleBetTypeChange}
             >
-                {[betInfo.bet_a_name, betInfo.bet_b_name].map((value) => (
+                {[betInfo?.bet_a_name, betInfo?.bet_b_name].map((value) => (
                     <Sheet
                         key={value}
                         sx={{

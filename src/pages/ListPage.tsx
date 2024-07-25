@@ -70,7 +70,7 @@ const ListPage: React.FC = () => {
   //navigation start 
   const navigate = useNavigate();
   const handleClick = (item: Bet) => {
-    navigate('/bet', { state: serializeBet(item) });
+    navigate('/bet/'.concat(item.address), { state: serializeBet(item) });
   };
   //navigation end 
 
