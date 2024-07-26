@@ -291,7 +291,7 @@ const handleShare = async (text: string) => {
             await navigator.share({
                 title: 'Мерзкий скуф!',
                 text: 'Переходи по ссылке!',
-                url: window.location.href,
+                url: text,
             });
             console.log('Content shared successfully');
         } catch (error) {
