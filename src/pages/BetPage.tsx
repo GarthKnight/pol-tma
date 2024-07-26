@@ -15,6 +15,7 @@ import { BetInfo } from '../contracts/wrappers';
 import { createTransactionForStringMessage } from '../contracts/Senders';
 import AspectRatio from '@mui/joy/AspectRatio';
 import { fetchContractByAddress } from '../contracts/Getters';
+import CoefficientContainer from '../components/CoefContainer';
 
 
 
@@ -185,6 +186,8 @@ function BetButtons(text: string, onChange: () => void) {
 
 
 function IconlessRadio(betInfo: BetInfo | undefined, handleBetTypeChange: (event: React.ChangeEvent<HTMLInputElement>) => void) {
+    if (betInfo === undefined) return;
+    const radioInfo = [new RadioInfoClass(betInfo.bet_a_name, betInfo.odds_a), new RadioInfoClass(betInfo.bet_b_name, betInfo.odds_b)]
     return (
         <JoyBox sx={{ width: '100%', ml: 3, mr: 3 }}>
             <FormLabel
@@ -205,29 +208,41 @@ function IconlessRadio(betInfo: BetInfo | undefined, handleBetTypeChange: (event
                 sx={{ gap: 1.5 }}
                 onChange={handleBetTypeChange}
             >
-                {[betInfo?.bet_a_name, betInfo?.bet_b_name].map((value) => (
+                {radioInfo.map((value) => (
                     <Sheet
-                        key={value}
+                        key={value.title}
                         sx={{
                             p: 1,
                             borderRadius: 'md',
                             backgroundColor: 'transparent',
                             border: '1px solid transparent',
                             boxShadow: 'none',
-                            outlineColor: 'transparent'
+                            outlineColor: 'transparent',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'space-between',
+                            width: '100%'
                         }}
                     >
                         <Radio
-                            label={value}
+                            label={value.title}
                             overlay
                             disableIcon
-                            value={value}
+                            value={value.title}
+                            sx={{
+                                flex: 1, // Make the radio take available space
+                                wordWrap: 'break-word', // Ensure long text wraps
+                                whiteSpace: 'normal',
+                                pr: 2
+                            }}
                             slotProps={{
                                 label: ({ checked }) => ({
                                     sx: {
                                         fontWeight: checked ? 'bold' : 'normal', // Bolder font when selected
                                         fontSize: 'md',
                                         color: 'white',
+                                        wordWrap: 'break-word', // Ensure long text wraps
+                                        whiteSpace: 'normal', // Ensure normal white space handling
                                     },
                                 }),
                                 action: ({ checked }) => ({
@@ -240,6 +255,20 @@ function IconlessRadio(betInfo: BetInfo | undefined, handleBetTypeChange: (event
                                 }),
                             }}
                         />
+
+                        <Box
+                            sx={{
+                                backgroundColor: 'rgba(0, 190, 162, 0.1)',
+                                color: '#15E5C6',
+                                width: '50px',
+                                textAlign: 'center',
+                                borderRadius: '8px',
+                                padding: '2px',
+                                marginRight: '4px'
+                            }}
+                        >
+                            {getCoefficent(value.coef)}
+                        </Box>
                     </Sheet>
                 ))}
             </RadioGroup>
@@ -284,5 +313,16 @@ const handleShare = async (text: string) => {
         console.warn('Web Share API is not supported in your browser');
     }
 }
+
+class RadioInfoClass {
+    title: string;
+    coef: bigint;
+
+    constructor(title: string, coef: bigint) {
+        this.title = title;
+        this.coef = coef;
+    }
+}
+
 
 export default BetPage;
