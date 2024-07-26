@@ -135,7 +135,6 @@ const BetPage: React.FC = () => {
             <Box sx={{ display: 'flex', mt: 1, mr: 3, ml: 3, mb: 5, gap: 2 }}>
                 {BetButtons("Share", () => {
                     if (bet != null) {
-                        // copyTextToClipboard("https://t.me/Polygame_bot/polpol/?startapp=".concat(bet.address))
                         handleShare("https://t.me/Polygame_bot/polpol/?startapp=".concat(bet.address))
                     }
                 })}
@@ -286,23 +285,12 @@ function deserializeBet(json: string): Bet {
     );
 }
 
-async function copyTextToClipboard(text: string): Promise<void> {
-    try {
-        await navigator.clipboard.writeText(text);
-        console.log('Text copied to clipboard');
-        alert('Text copied to clipboard!');
-    } catch (err) {
-        console.error('Failed to copy text: ', err);
-        alert('Failed to copy text to clipboard.');
-    }
-}
-
 const handleShare = async (text: string) => {
     if (navigator.share) {
         try {
             await navigator.share({
-                title: 'Scoof!',
-                text: text,
+                title: 'Мерзкий скуф!',
+                text: 'Переходи по ссылке!',
                 url: window.location.href,
             });
             console.log('Content shared successfully');
