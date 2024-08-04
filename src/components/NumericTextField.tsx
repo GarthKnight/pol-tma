@@ -1,5 +1,6 @@
 import React, { ChangeEvent, useState } from 'react';
 import { TextField, TextFieldProps, styled } from '@mui/material';
+import { Bet } from '../contracts/ChildContract';
 
 interface NumericTextFieldProps extends Omit<TextFieldProps, 'onChange' | 'value'> {
     value: string;
@@ -24,16 +25,16 @@ const StyledTextField = styled(TextField)(({ theme }) => ({
         borderBottomColor: 'white', // Underline color when hovered
     },
     '& .MuiInput-underline:hover:before': {
-        borderBottomColor: '#15E5C6', // Underline color when hovered
+        borderBottomColor: '#2c9cdb', // Underline color when hovered
     },
     '& .MuiInput-underline:after': {
-        borderBottomColor: '#15E5C6', // Underline color when active
+        borderBottomColor: '#2c9cdb', // Underline color when active
     },
     '& .MuiInput-underline.Mui-error:after': {
         borderBottomColor: theme.palette.error.main, // Underline color in error state
     },
     '& .MuiInputLabel-root.Mui-focused': {
-        color: '#15E5C6', // Title color when focused
+        color: '#2c9cdb', // Title color when focused
     },
     '& .MuiInputLabel-root.Mui-error': {
         color: theme.palette.error.main, // Label color in error state
@@ -47,7 +48,6 @@ const NumericTextField: React.FC<NumericTextFieldProps> = ({ value, onChange, ..
         if (value === '' || /^[0-9]+([,.][0-9]*)?$/.test(value)) {
             onChange(value);
             setIsValid(true)
-
         } else {
             setIsValid(false)
         }
@@ -56,16 +56,16 @@ const NumericTextField: React.FC<NumericTextFieldProps> = ({ value, onChange, ..
     return (
         <StyledTextField
             // error={!isValid}
-            helperText={
-                !isValid ? (
-                    <>
-                        Amount should match example: <br />
-                        3.1415 or 3,1415
-                    </>
-                ) : (
-                    ""
-                )
-            }
+            // helperText={
+            //     !isValid ? (
+            //         <>
+            //             Amount should match example: <br />
+            //             3.1415 or 3,1415
+            //         </>
+            //     ) : (
+            //         ""
+            //     )
+            // }
             value={value}
             onChange={handleInputChange}
             inputProps={{ inputMode: 'decimal' }}

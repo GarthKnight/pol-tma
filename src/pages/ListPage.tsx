@@ -12,6 +12,7 @@ import { BetInfo } from '../contracts/wrappers';
 import CenterCropImage from '../components/CenterCropImage';
 import { useTonAddress, useTonConnectUI } from '@tonconnect/ui-react';
 import CoefficientContainer from '../components/CoefContainer';
+import { fromNano } from 'ton-core';
 
 const ListPage: React.FC = () => {
 
@@ -108,7 +109,7 @@ const ListPage: React.FC = () => {
             height: '100%',
             marginTop: '28px'
           }}>
-            <CircularProgress sx={{ color: '#15E5C6' }} />
+            <CircularProgress sx={{ color: '#2c9cdb' }} />
           </div>
         ) : (
           <List sx={{ width: '100%' }}>
@@ -131,13 +132,14 @@ const BetItem: React.FC<{ betInfo: BetInfo }> = ({ betInfo }) => {
   return (
     <Box
       sx={{
-        backgroundColor: '#252525',
+        backgroundColor: '#1d2b39',
         color: 'white',
         width: '100%',
         textAlign: 'center',
         borderRadius: '10px',
         padding: '16px',
-        boxShadow: 3
+        boxShadow: 1,
+        border: '1px solid #2c3f50'
       }}>
       <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px', marginBottom: '12px' }}>
 
@@ -149,7 +151,7 @@ const BetItem: React.FC<{ betInfo: BetInfo }> = ({ betInfo }) => {
 
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <Typography variant="body2" sx={{ color: 'gray' }}>
-          {"TON ".concat((betInfo.total_bet_a + betInfo.total_bet_b).toString())}
+          {"TON ".concat((fromNano(betInfo.total_bet_a + betInfo.total_bet_b)).toString())}
         </Typography>
         <CoefficientContainer greenValue={betInfo.odds_a} redValue={betInfo.odds_b} />
       </div>

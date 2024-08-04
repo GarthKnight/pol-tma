@@ -1,7 +1,7 @@
 html,
 body,
 #root {
-  background-color: #151515;
+  background-color: #1d2b39;
   width: 100%;
   height: 100%;
   margin: 0;
@@ -56,7 +56,7 @@ body,
 }
 
 .app {
-  background-color: #151515;
+  background-color: #1d2b39;
   width: 100%;
   height: 100%;
   margin: 0;

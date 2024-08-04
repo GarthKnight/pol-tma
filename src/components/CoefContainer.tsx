@@ -5,8 +5,8 @@ const CoefficientContainer: React.FC<{ greenValue: bigint; redValue: bigint }> =
         <Box sx={{ display: 'flex' }}>
             <Box
                 sx={{
-                    backgroundColor: 'rgba(0, 190, 162, 0.1)',
-                    color: '#15E5C6',
+                    backgroundColor: 'rgba(37, 175, 96, 0.1)',
+                    color: '#25af60',
                     width: '50px',
                     textAlign: 'center',
                     borderRadius: '8px',
@@ -18,8 +18,8 @@ const CoefficientContainer: React.FC<{ greenValue: bigint; redValue: bigint }> =
             </Box>
             <Box
                 sx={{
-                    backgroundColor: 'rgba(252, 48, 48, 0.1)',
-                    color: '#FC3030',
+                    backgroundColor: 'rgba(230, 72, 1, 0.1)',
+                    color: '#e64801',
                     width: '50px',
                     textAlign: 'center',
                     borderRadius: '8px',

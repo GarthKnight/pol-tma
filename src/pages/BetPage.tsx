@@ -3,9 +3,8 @@ import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import BetInput from '../components/BetInput';
 import { Bet } from '../contracts/ChildContract';
-import { Box, Button, FormControl, FormControlLabel, IconButton as MuiIconButton, Typography } from '@mui/material';
+import { Box, Button, IconButton as MuiIconButton, Typography } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import CenterCropImage from '../components/CenterCropImage';
 import FormLabel from '@mui/joy/FormLabel';
 import Radio from '@mui/joy/Radio';
 import RadioGroup from '@mui/joy/RadioGroup';
@@ -13,9 +12,8 @@ import Sheet from '@mui/joy/Sheet';
 import JoyBox from '@mui/joy/Box';
 import { BetInfo } from '../contracts/wrappers';
 import { createTransactionForStringMessage } from '../contracts/Senders';
-import AspectRatio from '@mui/joy/AspectRatio';
 import { fetchContractByAddress } from '../contracts/Getters';
-import CoefficientContainer from '../components/CoefContainer';
+import { fromNano } from 'ton-core';
 
 
 
@@ -31,7 +29,7 @@ const BetPage: React.FC = () => {
     const [tonConnectUI] = useTonConnectUI();
     const [bet, setBet] = useState<Bet | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
-    const [betType, setBetType] = useState<string>('');
+    const [betType, setBetType] = useState<string>('1');
 
     const loadContractData = async () => {
         setLoading(true);
@@ -83,7 +81,47 @@ const BetPage: React.FC = () => {
                 <TonConnectButton style={{ marginRight: 20 }} />
             </div>
 
-            <div style={{ display: 'flex', justifyContent: 'center' }}>
+            <Box
+                display="flex"
+                alignItems="center"
+                justifyContent="space-between"
+                sx={{ mr: 3, ml: 3 }}
+            >
+                <Box
+                    sx={{
+                        width: 64,
+                        height: 64,
+                        borderRadius: '50%',
+                        overflow: 'hidden',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        flexShrink: 0,
+                    }}
+                >
+                    <Box
+                        component="img"
+                        src={bet?.betInfo.image}
+                        alt="Your Image"
+                        sx={{
+                            width: '100%',
+                            height: '100%',
+                            objectFit: 'cover', // Scale image to cover container
+                        }}
+                    />
+                </Box>
+
+                <Typography variant="h5" sx={{
+                    textAlign: 'left',
+                    flexGrow: 1,
+                    color: 'white',
+                    ml: 3
+                }}>
+                    {bet?.betInfo.title}
+                </Typography>
+            </Box>
+
+            {/* <div style={{ display: 'flex', justifyContent: 'center' }}>
                 <AspectRatio
                     ratio="16/9"
                     sx={{
@@ -111,12 +149,12 @@ const BetPage: React.FC = () => {
                 justifyContent: 'start', ml: 3, mr: 3, mt: 2
             }}>
                 {bet?.betInfo.title}
-            </Typography>
+            </Typography> */}
 
             <Typography variant="body1" sx={{
                 color: 'white',
                 display: 'flex',
-                justifyContent: 'start', ml: 3, mr: 3
+                justifyContent: 'start', ml: 3, mr: 3, mt: 1
             }}>
                 {bet?.betInfo.source}
             </Typography>
@@ -126,9 +164,11 @@ const BetPage: React.FC = () => {
                 {IconlessRadio(bet?.betInfo, handleBetTypeChange)}
             </Box>
 
-            <Box sx={{ display: 'flex', justifyContent: 'start', mt: 2, ml: 3, mr: 3 }}>
+            <Box sx={{ display: 'flex', justifyContent: 'start', mt: 1, ml: 3, mr: 3 }}>
                 <BetInput
                     onConfirm={onSubmitPressed}
+                    bet={bet}
+                    betType={betType}
                 />
             </Box>
 
@@ -156,20 +196,20 @@ function BetButtons(text: string, onChange: () => void) {
             onClick={onChange}
             sx={{
                 flexGrow: 1, // Make the button take up available space
-                color: '#15E5C6',
-                borderColor: '#15E5C6', // Set the default border color
+                color: 'white',
+                borderColor: '#2c9cdb', // Set the default border color
                 borderRadius: 20, // Adjust the value to control the roundness
                 padding: '8px 16px', // Adjust padding as needed
                 marginTop: '8px',
                 alignSelf: 'flex-start', // Align the Button to the top
 
                 '&:hover': {
-                    borderColor: '#15E5C6', // Ensure the border color is consistent on hover
-                    backgroundColor: 'rgba(21, 229, 198, 0.1)' // Optional: Light background color on hover
+                    borderColor: '#2c9cdb', // Ensure the border color is consistent on hover
+                    backgroundColor: 'rgba(44, 156, 219, 0.1)' // Optional: Light background color on hover
                 },
                 '&.Mui-focused': {
-                    borderColor: '#15E5C6', // Ensure the border color is consistent when focused
-                    boxShadow: `0 0 0 2px rgba(21, 229, 198, 0.5)` // Optional: Shadow for focus state
+                    borderColor: '#2c9cdb', // Ensure the border color is consistent when focused
+                    boxShadow: `0 0 0 2px rgba(44, 156, 219, 0.1)` // Optional: Shadow for focus state
                 },
                 '&:focus': {
                     outline: 'none', // Remove focus outline
@@ -186,7 +226,7 @@ function BetButtons(text: string, onChange: () => void) {
 
 function IconlessRadio(betInfo: BetInfo | undefined, handleBetTypeChange: (event: React.ChangeEvent<HTMLInputElement>) => void) {
     if (betInfo === undefined) return;
-    const radioInfo = [new RadioInfoClass(betInfo.bet_a_name, betInfo.odds_a), new RadioInfoClass(betInfo.bet_b_name, betInfo.odds_b)]
+    const radioInfo = [new RadioButtonInfo(betInfo.bet_a_name, betInfo.total_bet_a), new RadioButtonInfo(betInfo.bet_b_name, betInfo.total_bet_b)]
     return (
         <JoyBox sx={{ width: '100%', ml: 3, mr: 3 }}>
             <FormLabel
@@ -246,7 +286,7 @@ function IconlessRadio(betInfo: BetInfo | undefined, handleBetTypeChange: (event
                                 }),
                                 action: ({ checked }) => ({
                                     sx: {
-                                        border: checked ? '2px solid #15E5C6' : '1px solid white',
+                                        border: checked ? '1px solid #2c9cdb' : '1px solid white',
                                         '&:hover': {
                                             backgroundColor: 'transparent',
                                         },
@@ -255,19 +295,39 @@ function IconlessRadio(betInfo: BetInfo | undefined, handleBetTypeChange: (event
                             }}
                         />
 
+
                         <Box
                             sx={{
-                                backgroundColor: 'rgba(0, 190, 162, 0.1)',
-                                color: '#15E5C6',
-                                width: '50px',
+                                backgroundColor: 'rgba(44, 156, 219, 0.4)',
+                                color: 'white',
+                                maxWidth: '30%', // Limit the maximum width to 30% of its container
                                 textAlign: 'center',
                                 borderRadius: '8px',
-                                padding: '2px',
-                                marginRight: '4px'
+                                pt: '4px',
+                                pb: '4px',
+                                pr: '8px',
+                                pl: '8px',
+                                marginRight: '4px',
+                                overflow: 'hidden', // Ensure no content overflows outside of the Box
+                                display: 'flex', // Use flexbox for centering content
+                                alignItems: 'center', // Center items vertically
+                                justifyContent: 'center' // Center items horizontally
                             }}
                         >
-                            {getCoefficent(value.coef)}
+                            <Typography
+                                noWrap // Prevent text wrapping
+                                sx={{
+                                    overflow: 'hidden', // Hide any overflowed content
+                                    textOverflow: 'ellipsis', // Show ellipsis when text overflows
+                                    whiteSpace: 'nowrap', // Prevent text from wrapping
+                                    fontSize: 'inherit', // Inherit font size from parent (optional)
+                                    color: 'inherit' // Inherit color from parent (optional)
+                                }}
+                            >
+                                {('TON ').concat(fromNano(value.coef).toString())}
+                            </Typography>
                         </Box>
+
                     </Sheet>
                 ))}
             </RadioGroup>
@@ -289,8 +349,8 @@ const handleShare = async (text: string) => {
     if (navigator.share) {
         try {
             await navigator.share({
-                title: 'Мерзкий скуф!',
-                text: 'Переходи по ссылке!',
+                title: 'Politmarket',
+                text: 'Bet on any event!',
                 url: text,
             });
             console.log('Content shared successfully');
@@ -302,7 +362,7 @@ const handleShare = async (text: string) => {
     }
 }
 
-class RadioInfoClass {
+class RadioButtonInfo {
     title: string;
     coef: bigint;
 

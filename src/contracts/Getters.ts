@@ -84,8 +84,9 @@ export async function getBetInfo(address: string) {
 
     const betInfo = await contract.getGetBetInfo();
 
-    // console.log("title:", betInfo.title);
-    // console.log("finish date:", betInfo.finishDate);
+
+    console.log("total_bet_a:", betInfo.total_bet_a);
+    console.log("total_bet_b:", betInfo.total_bet_b);
 
     return betInfo
 }

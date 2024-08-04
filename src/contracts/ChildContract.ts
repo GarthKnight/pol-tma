@@ -2,13 +2,14 @@ import {
   Contract, ContractProvider, Sender, Address, Cell, beginCell, TupleBuilder
 } from "@ton/core";
 import * as wrappers from "./wrappers";
+import { loadTupleBetInfo } from "./wrappers";
 
 export default class ChildContract implements Contract {
 
   async getGetBetInfo(provider: ContractProvider) {
     let builder = new TupleBuilder();
     let source = (await provider.get('getBetInfo', builder.build())).stack;
-    const result = wrappers.loadTupleBetInfo(source);
+    const result = loadTupleBetInfo(source);
     return result;
   }
 

@@ -17,7 +17,7 @@ const CustomTab = styled(Tab)(({ theme }) => ({
     '&.Mui-selected': {
         backgroundColor: 'transparent',
         color: 'white', // Selected text color
-        borderBottom: '2px solid #15E5C6', // Custom underline color and thickness
+        borderBottom: '2px solid #2c9cdb', // Custom underline color and thickness
     },
     '&.Mui-selected span': {
         color: 'white', // Ensures that the text inside span also gets the color
